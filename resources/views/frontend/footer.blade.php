@@ -83,7 +83,7 @@
                     <h3 class="text-lg font-semibold tracking-wider text-white uppercase mb-6">Universities</h3>
                     <ul class="space-y-3">
                         @foreach ($wheretoStudies as $study)    
-                        <li><a href="{{ route('where.to.study', $study->id) }}" class="text-gray-400 hover:text-white transition-colors duration-300 block py-1">{{ $study->name }}</a></li>
+                        <li><a href="{{ route('where.to.study', $study->slug) }}" class="text-gray-400 hover:text-white transition-colors duration-300 block py-1">{{ $study->name }}</a></li>
                         @endforeach  
                     </ul>
                 </div>

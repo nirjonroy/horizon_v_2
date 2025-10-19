@@ -2,12 +2,23 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/jox32g97phlr/public_html/
+
+    # Sync repo to live
     - /bin/rsync -a --delete --exclude=".git" --exclude=".github" --exclude="node_modules" --exclude=".env" ./ "$DEPLOYPATH"
+
+    # Composer (try common paths; skip if not found)
     - cd "$DEPLOYPATH"
     - 'if [ -x /opt/cpanel/composer/bin/composer ]; then /opt/cpanel/composer/bin/composer install --no-dev --prefer-dist --no-interaction; elif command -v composer >/dev/null 2>&1; then composer install --no-dev --prefer-dist --no-interaction; elif [ -x /usr/bin/composer ]; then /usr/bin/composer install --no-dev --prefer-dist --no-interaction; else echo "Composer not found; skipping composer install"; fi'
+
+    # Laravel housekeeping
     - /usr/local/bin/php artisan storage:link || true
+    - /usr/local/bin/php artisan optimize || true
     - /usr/local/bin/php artisan config:cache || true
     - /usr/local/bin/php artisan route:cache || true
     - /usr/local/bin/php artisan view:cache || true
-    # Optional: enable if you want DB migrations each deploy
+    # Optional each deploy:
     # - /usr/local/bin/php artisan migrate --force || true
+
+    # Permissions (files 644, dirs 755)
+    - /bin/find "$DEPLOYPATH" -type f -exec chmod 644 {} \;
+    - /bin/find "$DEPLOYPATH" -type d -exec chmod 755 {} \;

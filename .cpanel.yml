@@ -1,0 +1,23 @@
+---
+deployment:
+  tasks:
+    # Deployment path to your live site
+    - export DEPLOYPATH=/home/jox32g97phlr/public_html/
+
+    # Sync files from repository to live site
+    - /bin/rsync -a --delete \
+        --exclude ".git" \
+        --exclude ".github" \
+        --exclude "node_modules" \
+        --exclude ".env" \
+        ./ $DEPLOYPATH
+
+    # Run Laravel setup tasks (safe to ignore if not Laravel)
+    - cd $DEPLOYPATH
+    - /opt/cpanel/composer/bin/composer install --no-dev --prefer-dist --no-interaction || true
+    - /usr/local/bin/php artisan storage:link || true
+    - /usr/local/bin/php artisan config:cache || true
+    - /usr/local/bin/php artisan route:cache || true
+    - /usr/local/bin/php artisan view:cache || true
+    # Uncomment this line if you want to run migrations automatically:
+    # - /usr/local/bin/php artisan migrate --force || true

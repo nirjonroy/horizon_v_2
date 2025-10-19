@@ -285,15 +285,15 @@
             <div class="bg-blue-600 h-2"></div>
 
             <!-- Thumbnail -->
-            <img src="{{ asset($course->image) }}"
-                 alt="Course Thumbnail" class="w-full h-48 object-cover rounded-md mb-4" />
+          <a href="{{ route('premium-course-details',  $course->slug) }}">  <img src="{{ asset($course->image) }}"
+                 alt="Course Thumbnail" class="w-full h-48 object-cover rounded-md mb-4" /> </a>
 
             <div class="p-6 flex flex-col flex-grow">
-                <h3 class="text-xl font-bold text-blue-800">{{ $course->title }}</h3>
+              <a href="{{ route('premium-course-details',  $course->slug) }}">  <h3 class="text-xl font-bold text-blue-800">{{ $course->title }}</h3> </a>
                 <p class="text-gray-600 mb-2">{{ $course->instructor }}</p>
-                <p class="text-gray-700 mb-6 flex-grow">
+               <a href="{{ route('premium-course-details',  $course->slug) }}"> <p class="text-gray-700 mb-6 flex-grow">
                     {{ \Illuminate\Support\Str::limit(strip_tags($course->short_description), 150) }}
-                </p>
+                </p> </a>
 
                 <div class="flex justify-between items-center mb-3">
                     <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">
@@ -307,9 +307,9 @@
                 </div>
 
                 <!-- Button stays at bottom -->
-                <a href="{{ route('premium-course-details', ['slug' => $course->slug, 'id' => $course->id]) }}"
+                <a href="{{ route('premium-course-details',  $course->slug) }}"
                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors duration-300 text-center mt-auto">
-                    Learn More
+                    Enroll Now
                 </a>
             </div>
         </div>

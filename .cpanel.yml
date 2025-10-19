@@ -3,13 +3,13 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/jox32g97phlr/public_html/
 
-    # 1) Sync repo to live
+    # 1) Sync repo -> live
     - /bin/rsync -a --delete --exclude=".git" --exclude=".github" --exclude="node_modules" --exclude=".env" ./ "$DEPLOYPATH"
 
-    # 2) Put web entry files at the web root (copy everything from /public to /public_html)
+    # 2) Put the web entry files at the web root (copy everything from /public to /public_html)
     - /bin/cp -a "$DEPLOYPATH/public/." "$DEPLOYPATH/"
 
-    # 3) Patch index.php so it points to local vendor/bootstrap (no '/../')
+    # 3) Fix index.php include paths
     - /bin/sed -i 's|/../vendor/autoload.php|/vendor/autoload.php|' "$DEPLOYPATH/index.php"
     - /bin/sed -i 's|/../bootstrap/app.php|/bootstrap/app.php|' "$DEPLOYPATH/index.php"
 
@@ -23,9 +23,9 @@ deployment:
     - /usr/local/bin/php artisan config:cache || true
     - /usr/local/bin/php artisan route:cache || true
     - /usr/local/bin/php artisan view:cache || true
-    # Optional DB migrations on each deploy:
+    # Optional:
     # - /usr/local/bin/php artisan migrate --force || true
 
-    # 6) Permissions (files 644, dirs 755)
+    # 6) Permissions
     - /bin/find "$DEPLOYPATH" -type f -exec chmod 644 {} \;
     - /bin/find "$DEPLOYPATH" -type d -exec chmod 755 {} \;

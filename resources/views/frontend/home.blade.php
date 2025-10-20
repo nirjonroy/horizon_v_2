@@ -103,10 +103,10 @@
   <!-- Section Header -->
   <div class="text-center mb-10 lg:mb-16">
     <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold text-[#213555] tracking-tight leading-none">
-      Horizons Global Academy Courses
+      Horizons Global Academy Courses roy
     </h2>
     <p class="mt-4 lg:mt-6 mx-auto max-w-3xl text-sm lg:text-lg text-[#4F709C] font-semibold text-gray-600">
-      Enhance your skills with our industry-leading courses taughts by experts.
+      Enhance your skills with our industry-leading courses taught by experts.
     </p>
     <!-- <a href="{{ route('premium-courses') }}"
        class="inline-block mt-4 text-sm lg:text-base font-semibold text-[#EA5455] hover:text-[#213555] transition-colors duration-200">

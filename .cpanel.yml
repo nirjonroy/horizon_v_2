@@ -1,40 +1,29 @@
----
 deployment:
   tasks:
-    # Set deploy path
-    - export DEPLOYPATH=/home/jox32g97phlr/public_html
+    - export DEPLOYPATH=/home/jox32g97phlr/public_html/
 
-    # 1) Sync repository to live (exclude runtime/upload folders)
+    # Sync repository to live (excluding uploads and images)
     - /bin/rsync -a --delete \
         --exclude=".git" \
         --exclude=".github" \
         --exclude="node_modules" \
         --exclude=".env" \
-        --exclude="public/uploads/***" \
         --exclude="public/premium-courses/***" \
+        --exclude="public/uploads/***" \
         --exclude="public/website-images/***" \
         ./ "$DEPLOYPATH"
 
-    # 2) Copy index + fix vendor/bootstrap paths
-    - /bin/cp -a "$DEPLOYPATH/public/." "$DEPLOYPATH/"
-    - /bin/sed -i 's|/../vendor/autoload.php|/vendor/autoload.php|g' "$DEPLOYPATH/index.php"
-    - /bin/sed -i 's|/../bootstrap/app.php|/bootstrap/app.php|g' "$DEPLOYPATH/index.php"
-
-    # 3) Install composer dependencies (if composer is available)
+    # Run composer if available
     - cd "$DEPLOYPATH"
-    - if [ -x /opt/cpanel/composer/bin/composer ]; then
-        /opt/cpanel/composer/bin/composer install --no-dev --prefer-dist --no-interaction;
-      else
-        composer install --no-dev --prefer-dist --no-interaction;
-      fi
+    - 'if [ -x /opt/cpanel/composer/bin/composer ]; then /opt/cpanel/composer/bin/composer install --no-dev --prefer-dist --no-interaction; elif command -v composer >/dev/null 2>&1; then composer install --no-dev --prefer-dist --no-interaction; elif [ -x /usr/bin/composer ]; then /usr/bin/composer install --no-dev --prefer-dist --no-interaction; else echo "Composer not found; skipping composer install"; fi'
 
-    # 4) Laravel cache optimizations
+    # Laravel optimizations (safe even if not Laravel)
     - /usr/local/bin/php artisan storage:link || true
     - /usr/local/bin/php artisan optimize || true
     - /usr/local/bin/php artisan config:cache || true
     - /usr/local/bin/php artisan route:cache || true
     - /usr/local/bin/php artisan view:cache || true
 
-    # 5) Permissions (safe defaults)
+    # Permissions (files 644, directories 755)
     - /bin/find "$DEPLOYPATH" -type f -exec chmod 644 {} \;
     - /bin/find "$DEPLOYPATH" -type d -exec chmod 755 {} \;

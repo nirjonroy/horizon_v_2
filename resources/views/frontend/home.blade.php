@@ -90,7 +90,7 @@
     </span>
 
     <h1 class="mt-1 block text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#EA5455] drop-shadow">
-      Top Universities &amp; Premium Courses
+      Topv dsaf Universities &amp; Premium Courses
     </h1>
 
     <p class="mt-4 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-slate-200">

@@ -3,7 +3,7 @@
     @include('frontend.head')
   <body>
       
-<div
+<!-- <div
   id="preloader"
   class="preloader fixed top-0 left-0 w-full h-full bg-primary flex justify-center items-center z-50"
 >
@@ -14,7 +14,7 @@
             @endphp
           <img class="w-36 lg:w-48 animate-bounce" src="{{asset($siteInfo->logo)}}" alt="{{$siteInfo->name}}" />
         </a>
-  </div>
+  </div> -->
 
 
 <div class="content hidden">

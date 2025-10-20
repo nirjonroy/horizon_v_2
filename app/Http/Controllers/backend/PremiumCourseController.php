@@ -34,7 +34,7 @@ public function store(Request $request)
         'questions' => 'nullable|string|max:255',
         'format' => 'nullable|string|max:255',
         'price' => 'required|numeric',
-        'old_price' => '',
+        'old_price' => 'numeric|nullable',
         'type' => 'required|string|max:255',
         'short_description' => 'nullable|string',
         'long_description' => 'nullable|string',

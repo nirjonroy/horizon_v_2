@@ -1,31 +1,29 @@
----
 deployment:
   tasks:
     - export DEPLOYPATH=/home/jox32g97phlr/public_html/
 
-    # 1) Sync repo -> live
-    - /bin/rsync -a --delete --exclude=".git" --exclude=".github" --exclude="node_modules" --exclude=".env" ./ "$DEPLOYPATH"
+    # Sync repository to live (excluding uploads and images)
+    - /bin/rsync -a --delete \
+        --exclude=".git" \
+        --exclude=".github" \
+        --exclude="node_modules" \
+        --exclude=".env" \
+        --exclude="public/premium-courses/***" \
+        --exclude="public/uploads/***" \
+        --exclude="public/website-images/***" \
+        ./ "$DEPLOYPATH"
 
-    # 2) Put the web entry files at the web root (copy everything from /public to /public_html)
-    - /bin/cp -a "$DEPLOYPATH/public/." "$DEPLOYPATH/"
-
-    # 3) Fix index.php include paths
-    - /bin/sed -i 's|/../vendor/autoload.php|/vendor/autoload.php|' "$DEPLOYPATH/index.php"
-    - /bin/sed -i 's|/../bootstrap/app.php|/bootstrap/app.php|' "$DEPLOYPATH/index.php"
-
-    # 4) Composer (try common paths; skip if not found)
+    # Run composer if available
     - cd "$DEPLOYPATH"
     - 'if [ -x /opt/cpanel/composer/bin/composer ]; then /opt/cpanel/composer/bin/composer install --no-dev --prefer-dist --no-interaction; elif command -v composer >/dev/null 2>&1; then composer install --no-dev --prefer-dist --no-interaction; elif [ -x /usr/bin/composer ]; then /usr/bin/composer install --no-dev --prefer-dist --no-interaction; else echo "Composer not found; skipping composer install"; fi'
 
-    # 5) Laravel housekeeping
+    # Laravel optimizations (safe even if not Laravel)
     - /usr/local/bin/php artisan storage:link || true
     - /usr/local/bin/php artisan optimize || true
     - /usr/local/bin/php artisan config:cache || true
     - /usr/local/bin/php artisan route:cache || true
     - /usr/local/bin/php artisan view:cache || true
-    # Optional:
-    # - /usr/local/bin/php artisan migrate --force || true
 
-    # 6) Permissions
+    # Permissions (files 644, directories 755)
     - /bin/find "$DEPLOYPATH" -type f -exec chmod 644 {} \;
     - /bin/find "$DEPLOYPATH" -type d -exec chmod 755 {} \;

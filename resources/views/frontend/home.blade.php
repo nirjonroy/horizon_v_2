@@ -90,7 +90,7 @@
     </span>
 
     <h1 class="mt-1 block text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#EA5455] drop-shadow">
-      Topv dsaf Universities &amp; Premium Courses
+      Top Universities &amp; Premium Courses
     </h1>
 
     <p class="mt-4 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-slate-200">
@@ -106,7 +106,7 @@
       Horizons Global Academy Courses
     </h2>
     <p class="mt-4 lg:mt-6 mx-auto max-w-3xl text-sm lg:text-lg text-[#4F709C] font-semibold text-gray-600">
-      Enhance your skills with our industry-leading courses taught by experts.
+      Enhance your skills with our industry-leading courses taughts by experts.
     </p>
     <!-- <a href="{{ route('premium-courses') }}"
        class="inline-block mt-4 text-sm lg:text-base font-semibold text-[#EA5455] hover:text-[#213555] transition-colors duration-200">

@@ -1,36 +1,36 @@
 deployment:
   tasks:
-    # Paths
-    - 'export DEPLOYPATH=/home/jox32g97phlr/public_html'
-    - 'export REPOPATH=/home/jox32g97phlr/repositories/horizon_v_2'
-    - 'export LOGFILE=/home/jox32g97phlr/deploy-$(date -u +%F_%H%M%S).log'
+    - export DEPLOYPATH=/home/jox32g97phlr/public_html
+    - export REPOPATH=/home/jox32g97phlr/repositories/horizon_v_2
+    - /bin/bash -lc '
+        set -e
+        TS=$(date -u +%Y%m%dT%H%M%SZ)
+        LOGDIR="$HOME/.cpanel/logs"; mkdir -p "$LOGDIR"
+        LOG="$LOGDIR/deploy_$TS.log"
 
-    # One bash run; capture all output to a timestamped log
-    - >
-      /bin/bash -lc '{
-        echo "=== DEPLOY START $(date -u) ===";
-        echo "[1/4] rsync from $REPOPATH to $DEPLOYPATH";
-        rsync -a --delete
-          --exclude=".git"
-          --exclude="node_modules"
-          --exclude=".env"
-          --exclude="public/uploads/***"
-          --exclude="public/premium-courses/***"
-          --exclude="public/website-images/***"
-          "$REPOPATH"/ "$DEPLOYPATH"/;
+        {
+          echo "== DEPLOY START $TS =="
+          echo "[1/4] rsync from $REPOPATH to $DEPLOYPATH"
+          rsync -av --delete \
+            --exclude=".git" \
+            --exclude="node_modules" \
+            --exclude=".env" \
+            --exclude="public/uploads/***" \
+            --exclude="public/premium-courses/***" \
+            --exclude="public/website-images/***" \
+            "$REPOPATH"/ "$DEPLOYPATH"/
 
-        echo "[2/4] artisan caches";
-        cd "$DEPLOYPATH";
-        php artisan optimize:clear || true;
-        php artisan config:cache   || true;
-        php artisan route:cache    || true;
-        php artisan view:cache     || true;
+          echo "[2/4] artisan caches"
+          cd "$DEPLOYPATH"
+          /usr/local/bin/php artisan optimize:clear || true
+          /usr/local/bin/php artisan config:cache   || true
+          /usr/local/bin/php artisan route:cache    || true
+          /usr/local/bin/php artisan view:cache     || true
 
-        echo "[3/4] permissions";
-        find "$DEPLOYPATH" -type f -exec chmod 644 {} \;;
-        find "$DEPLOYPATH" -type d -exec chmod 755 {} \;;
+          echo "[3/4] permissions"
+          find "$DEPLOYPATH" -type f -exec chmod 644 {} \;
+          find "$DEPLOYPATH" -type d -exec chmod 755 {} \;
 
-        echo "[4/4] done";
-        echo "=== DEPLOY END $(date -u) ===";
-      } 2>&1 | tee "$LOGFILE"'
-      
+          echo "[4/4] done"
+        } | tee -a "$LOG"
+      '

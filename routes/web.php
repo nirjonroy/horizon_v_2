@@ -105,6 +105,7 @@ Route::get('premium-course-details/{slug}/{id}', function ($slug, $id) {
     return redirect()->to('/courses')->with('error', 'Course not found');
 })->whereNumber('id');
 
+
 // Route::get('support-for-study-abroad', [homeController::class, 'support_study_abroad'])->name('support.study.abroad');
 // Route::get('support-career-preparation', [homeController::class, 'career_preparation'])->name('support.career.preparation');
 Route::get('contact-us', [homeController::class, 'contact_us'])->name('contact.us');

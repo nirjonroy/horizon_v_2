@@ -2,35 +2,34 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/jox32g97phlr/public_html
     - export REPOPATH=/home/jox32g97phlr/repositories/horizon_v_2
-    - /bin/bash -lc '
-        set -e
-        TS=$(date -u +%Y%m%dT%H%M%SZ)
-        LOGDIR="$HOME/.cpanel/logs"; mkdir -p "$LOGDIR"
-        LOG="$LOGDIR/deploy_$TS.log"
 
-        {
-          echo "== DEPLOY START $TS =="
-          echo "[1/4] rsync from $REPOPATH to $DEPLOYPATH"
-          rsync -av --delete \
-            --exclude=".git" \
-            --exclude="node_modules" \
-            --exclude=".env" \
-            --exclude="public/uploads/***" \
-            --exclude="public/premium-courses/***" \
-            --exclude="public/website-images/***" \
-            "$REPOPATH"/ "$DEPLOYPATH"/
+    # rsync repo -> live (keep your static folders)
+    - rsync -av --delete \
+        --exclude=".git" \
+        --exclude="node_modules" \
+        --exclude=".env" \
+        --exclude="public/uploads/***" \
+        --exclude="public/premium-courses/***" \
+        --exclude="public/website-images/***" \
+        "$REPOPATH"/ "$DEPLOYPATH"/
 
-          echo "[2/4] artisan caches"
-          cd "$DEPLOYPATH"
-          /usr/local/bin/php artisan optimize:clear || true
-          /usr/local/bin/php artisan config:cache   || true
-          /usr/local/bin/php artisan route:cache    || true
-          /usr/local/bin/php artisan view:cache     || true
+    # install composer deps if composer is available
+    - if [ -x /opt/cpanel/composer/bin/composer ]; then
+        cd "$DEPLOYPATH" &&
+        COMPOSER_MEMORY_LIMIT=-1 /opt/cpanel/composer/bin/composer install --no-dev --prefer-dist --no-interaction;
+      elif command -v composer >/dev/null 2>&1; then
+        cd "$DEPLOYPATH" &&
+        COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --prefer-dist --no-interaction;
+      fi
 
-          echo "[3/4] permissions"
-          find "$DEPLOYPATH" -type f -exec chmod 644 {} \;
-          find "$DEPLOYPATH" -type d -exec chmod 755 {} \;
+    # permissions for writable dirs
+    - find "$DEPLOYPATH/storage" -type d -exec chmod 775 {} \;
+    - find "$DEPLOYPATH/storage" -type f -exec chmod 664 {} \;
+    - chmod -R 775 "$DEPLOYPATH/bootstrap/cache"
 
-          echo "[4/4] done"
-        } | tee -a "$LOG"
-      '
+    # laravel caches
+    - cd "$DEPLOYPATH"
+    - /usr/local/bin/php artisan optimize:clear
+    - /usr/local/bin/php artisan config:cache
+    - /usr/local/bin/php artisan route:cache
+    - /usr/local/bin/php artisan view:cache

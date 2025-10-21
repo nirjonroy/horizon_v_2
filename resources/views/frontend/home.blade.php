@@ -90,7 +90,7 @@
     </span>
 
     <h1 class="mt-1 block text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#EA5455] drop-shadow">
-      Top Universities &amp; Premium Courses
+      Top Universities test &amp; Premium Courses
     </h1>
 
     <p class="mt-4 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-slate-200">
@@ -103,7 +103,7 @@
   <!-- Section Header -->
   <div class="text-center mb-10 lg:mb-16">
     <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold text-[#213555] tracking-tight leading-none">
-      Horizons Global Academy Courses roy
+      Horizons Global Academy Courses
     </h2>
     <p class="mt-4 lg:mt-6 mx-auto max-w-3xl text-sm lg:text-lg text-[#4F709C] font-semibold text-gray-600">
       Enhance your skills with our industry-leading courses taught by experts.

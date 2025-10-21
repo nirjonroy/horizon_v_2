@@ -1,40 +1,35 @@
----
 deployment:
   tasks:
-    # Set deploy path
-    - export DEPLOYPATH=/home/jox32g97phlr/public_html
+    # Paths
+    - 'export DEPLOYPATH=/home/jox32g97phlr/public_html'
+    - 'export REPOPATH=/home/jox32g97phlr/repositories/horizon_v_2'
+    - 'export LOGFILE=/home/jox32g97phlr/deploy-$(date -u +%F_%H%M%S).log'
 
-    # 1) Sync repository to live (exclude runtime/upload folders)
-    - /bin/rsync -a --delete \
-        --exclude=".git" \
-        --exclude=".github" \
-        --exclude="node_modules" \
-        --exclude=".env" \
-        --exclude="public/uploads/***" \
-        --exclude="public/premium-courses/***" \
-        --exclude="public/website-images/***" \
-        ./ "$DEPLOYPATH"
+    # One bash run; capture all output to a timestamped log
+    - >
+      /bin/bash -lc '{
+        echo "=== DEPLOY START $(date -u) ===";
+        echo "[1/4] rsync from $REPOPATH to $DEPLOYPATH";
+        rsync -a --delete
+          --exclude=".git"
+          --exclude="node_modules"
+          --exclude=".env"
+          --exclude="public/uploads/***"
+          --exclude="public/premium-courses/***"
+          --exclude="public/website-images/***"
+          "$REPOPATH"/ "$DEPLOYPATH"/;
 
-    # 2) Copy index + fix vendor/bootstrap paths
-    - /bin/cp -a "$DEPLOYPATH/public/." "$DEPLOYPATH/"
-    - /bin/sed -i 's|/../vendor/autoload.php|/vendor/autoload.php|g' "$DEPLOYPATH/index.php"
-    - /bin/sed -i 's|/../bootstrap/app.php|/bootstrap/app.php|g' "$DEPLOYPATH/index.php"
+        echo "[2/4] artisan caches";
+        cd "$DEPLOYPATH";
+        php artisan optimize:clear || true;
+        php artisan config:cache   || true;
+        php artisan route:cache    || true;
+        php artisan view:cache     || true;
 
-    # 3) Install composer dependencies (if composer is available)
-    - cd "$DEPLOYPATH"
-    - if [ -x /opt/cpanel/composer/bin/composer ]; then
-        /opt/cpanel/composer/bin/composer install --no-dev --prefer-dist --no-interaction;
-      else
-        composer install --no-dev --prefer-dist --no-interaction;
-      fi
+        echo "[3/4] permissions";
+        find "$DEPLOYPATH" -type f -exec chmod 644 {} \;;
+        find "$DEPLOYPATH" -type d -exec chmod 755 {} \;;
 
-    # 4) Laravel cache optimizations
-    - /usr/local/bin/php artisan storage:link || true
-    - /usr/local/bin/php artisan optimize || true
-    - /usr/local/bin/php artisan config:cache || true
-    - /usr/local/bin/php artisan route:cache || true
-    - /usr/local/bin/php artisan view:cache || true
-
-    # 5) Permissions (safe defaults)
-    - /bin/find "$DEPLOYPATH" -type f -exec chmod 644 {} \;
-    - /bin/find "$DEPLOYPATH" -type d -exec chmod 755 {} \;
+        echo "[4/4] done";
+        echo "=== DEPLOY END $(date -u) ===";
+      } 2>&1 | tee "$LOGFILE"'

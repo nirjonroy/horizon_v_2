@@ -33,3 +33,4 @@ deployment:
         echo "[4/4] done";
         echo "=== DEPLOY END $(date -u) ===";
       } 2>&1 | tee "$LOGFILE"'
+      

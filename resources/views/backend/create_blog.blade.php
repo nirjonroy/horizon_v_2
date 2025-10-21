@@ -90,6 +90,54 @@
                     <input type="text" class="form-control" id="exampleInputSlug" placeholder="Custom slug (optional)" name="slug" value="{{ old('slug') }}">
                 </div>
 
+                <div class="form-group">
+                    <label for="metaImageInput">Meta Image</label>
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="metaImageInput" name="meta_image">
+                            <label class="custom-file-label" for="metaImageInput">Choose file</label>
+                        </div>
+                        <div class="input-group-append">
+                            <span class="input-group-text">Upload</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="metaTitleInput">Meta Title</label>
+                    <input type="text" class="form-control" id="metaTitleInput" placeholder="Meta title for SEO" name="meta_title" value="{{ old('meta_title') }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="metaDescriptionInput">Meta Description</label>
+                    <textarea class="form-control" id="metaDescriptionInput" name="meta_description" rows="4" placeholder="Short description for search engines">{{ old('meta_description') }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="authorInput">Author</label>
+                    <input type="text" class="form-control" id="authorInput" name="author" placeholder="Author name" value="{{ old('author') }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="publisherInput">Publisher</label>
+                    <input type="text" class="form-control" id="publisherInput" name="publisher" placeholder="Publisher name" value="{{ old('publisher') }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="copyrightInput">Copyright</label>
+                    <input type="text" class="form-control" id="copyrightInput" name="copyright" placeholder="Copyright notice" value="{{ old('copyright') }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="siteNameInput">Site Name</label>
+                    <input type="text" class="form-control" id="siteNameInput" name="site_name" placeholder="Name of the site" value="{{ old('site_name') }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="keywordsInput">Keywords</label>
+                    <input type="text" class="form-control" id="keywordsInput" name="keywords" placeholder="Keyword1, Keyword2, Keyword3" value="{{ old('keywords') }}">
+                </div>
+
 
                 <div class="form-group">
                     <label for="exampleInputName"> Descriptions</label>

@@ -33,6 +33,10 @@ class blogController extends Controller
             $blog->image = $image;
         }
 
+        if ($request->hasFile('meta_image')) {
+            $blog->meta_image = $this->uploadImage($request->file('meta_image'), 'meta_image');
+        }
+
         $blog->where_to_study_id = $request->where_to_study_id;
         $blog->life_style_id = $request->life_style_id;
         $blog->accommodation_id = $request->accommodation_id;
@@ -41,6 +45,13 @@ class blogController extends Controller
         $blog->title = $request->title;
         $blog->slug = $request->slug;
         $blog->description = $request->description;
+        $blog->meta_title = $request->meta_title;
+        $blog->meta_description = $request->meta_description;
+        $blog->author = $request->author;
+        $blog->publisher = $request->publisher;
+        $blog->copyright = $request->copyright;
+        $blog->site_name = $request->site_name;
+        $blog->keywords = $this->normaliseKeywords($request->keywords);
 
 
 
@@ -61,6 +72,7 @@ class blogController extends Controller
 
         // Update hero_banner image
         $blog->image = $this->updateImage($request->file('image'), $blog->image, 'image');
+        $blog->meta_image = $this->updateImage($request->file('meta_image'), $blog->meta_image, 'meta_image');
 
 
 
@@ -74,6 +86,13 @@ class blogController extends Controller
         $blog->title = $request->title;
         $blog->slug = $request->slug;
         $blog->description = $request->description;
+        $blog->meta_title = $request->meta_title;
+        $blog->meta_description = $request->meta_description;
+        $blog->author = $request->author;
+        $blog->publisher = $request->publisher;
+        $blog->copyright = $request->copyright;
+        $blog->site_name = $request->site_name;
+        $blog->keywords = $this->normaliseKeywords($request->keywords);
 
 
         $blog->save();
@@ -119,6 +138,8 @@ class blogController extends Controller
     $blog = Blog::findOrFail($id);
 
     // Delete associated images
+    $this->deleteImageIfExists($blog->image);
+    $this->deleteImageIfExists($blog->meta_image);
     $this->deleteImageIfExists($blog->hero_banner);
     $this->deleteImageIfExists($blog->Sporting_event_image);
 
@@ -128,5 +149,20 @@ class blogController extends Controller
 
     return redirect()->back()->with('success', 'Record deleted successfully');
 }
+
+    private function normaliseKeywords(?string $keywords): ?string
+    {
+        if ($keywords === null) {
+            return null;
+        }
+
+        $keywordsArray = array_filter(array_map('trim', explode(',', $keywords)));
+
+        if (empty($keywordsArray)) {
+            return null;
+        }
+
+        return implode(', ', $keywordsArray);
+    }
 
 }

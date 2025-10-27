@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\whereToStudy;
 use RealRashid\SweetAlert\Facades\Alert;
-use Image;
 
 class whereToStudyController extends Controller
 {
@@ -26,76 +25,36 @@ class whereToStudyController extends Controller
     public function store(Request $request){
         $whereToStudy = new whereToStudy();
 
-        if($request->slider1){
-            $extention = $request->slider1->getClientOriginalExtension();
-            $slider1 = 'slider1'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $slider1 = 'uploads/custom-images/where_to_study/'.$slider1;
-            Image::make($request->slider1)
-                ->save(public_path().'/'.$slider1);
-            $whereToStudy->slider1 = $slider1;
+        if($request->hasFile('slider1')){
+            $whereToStudy->slider1 = $this->uploadImage($request->file('slider1'));
         }
 
-        if($request->slider2){
-            $extention = $request->slider2->getClientOriginalExtension();
-            $slider2 = 'slider2'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $slider2 = 'uploads/custom-images/where_to_study/'.$slider2;
-            Image::make($request->slider2)
-                ->save(public_path().'/'.$slider2);
-            $whereToStudy->slider2 = $slider2;
+        if($request->hasFile('slider2')){
+            $whereToStudy->slider2 = $this->uploadImage($request->file('slider2'));
         }
 
-        if($request->slider3){
-            $extention = $request->slider3->getClientOriginalExtension();
-            $slider3 = 'slider3'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $slider3 = 'uploads/custom-images/where_to_study/'.$slider3;
-            Image::make($request->slider3)
-                ->save(public_path().'/'.$slider3);
-            $whereToStudy->slider3 = $slider3;
+        if($request->hasFile('slider3')){
+            $whereToStudy->slider3 = $this->uploadImage($request->file('slider3'));
         }
 
-        if($request->image_1){
-            $extention = $request->image_1->getClientOriginalExtension();
-            $image_1 = 'image_1'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image_1 = 'uploads/custom-images/where_to_study/'.$image_1;
-            Image::make($request->image_1)
-                ->save(public_path().'/'.$image_1);
-            $whereToStudy->image_1 = $image_1;
+        if($request->hasFile('image_1')){
+            $whereToStudy->image_1 = $this->uploadImage($request->file('image_1'));
         }
 
-        if($request->image_2){
-            $extention = $request->image_2->getClientOriginalExtension();
-            $image_2 = 'image_2'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image_2 = 'uploads/custom-images/where_to_study/'.$image_2;
-            Image::make($request->image_2)
-                ->save(public_path().'/'.$image_2);
-            $whereToStudy->image_2 = $image_2;
+        if($request->hasFile('image_2')){
+            $whereToStudy->image_2 = $this->uploadImage($request->file('image_2'));
         }
 
-        if($request->image_3){
-            $extention = $request->image_3->getClientOriginalExtension();
-            $image_3 = 'image_3'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image_3 = 'uploads/custom-images/where_to_study/'.$image_3;
-            Image::make($request->image_3)
-                ->save(public_path().'/'.$image_3);
-            $whereToStudy->image_3 = $image_3;
+        if($request->hasFile('image_3')){
+            $whereToStudy->image_3 = $this->uploadImage($request->file('image_3'));
         }
 
-        if($request->image_4){
-            $extention = $request->image_4->getClientOriginalExtension();
-            $image_4 = 'image_4'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image_4 = 'uploads/custom-images/where_to_study/'.$image_4;
-            Image::make($request->image_4)
-                ->save(public_path().'/'.$image_4);
-            $whereToStudy->image_4 = $image_4;
+        if($request->hasFile('image_4')){
+            $whereToStudy->image_4 = $this->uploadImage($request->file('image_4'));
         }
 
-        if($request->image_5){
-            $extention = $request->image_5->getClientOriginalExtension();
-            $image_5 = 'image_5'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image_5 = 'uploads/custom-images/where_to_study/'.$image_5;
-            Image::make($request->image_5)
-                ->save(public_path().'/'.$image_5);
-            $whereToStudy->image_5 = $image_5;
+        if($request->hasFile('image_5')){
+            $whereToStudy->image_5 = $this->uploadImage($request->file('image_5'));
         }
 
         $whereToStudy->name = $request->name;
@@ -140,28 +99,28 @@ class whereToStudyController extends Controller
         $whereToStudy = whereToStudy::find($id);
 
         // Update slider1 image
-        $whereToStudy->slider1 = $this->updateImage($request->file('slider1'), $whereToStudy->slider1, 'slider1');
+        $whereToStudy->slider1 = $this->updateImage($request->file('slider1'), $whereToStudy->slider1);
 
         // Update slider2 image
-        $whereToStudy->slider2 = $this->updateImage($request->file('slider2'), $whereToStudy->slider2, 'slider2');
+        $whereToStudy->slider2 = $this->updateImage($request->file('slider2'), $whereToStudy->slider2);
 
         // Update slider3 image
-        $whereToStudy->slider3 = $this->updateImage($request->file('slider3'), $whereToStudy->slider3, 'slider3');
+        $whereToStudy->slider3 = $this->updateImage($request->file('slider3'), $whereToStudy->slider3);
 
         // Update image_1
-        $whereToStudy->image_1 = $this->updateImage($request->file('image_1'), $whereToStudy->image_1, 'image_1');
+        $whereToStudy->image_1 = $this->updateImage($request->file('image_1'), $whereToStudy->image_1);
 
         // Update image_2
-        $whereToStudy->image_2 = $this->updateImage($request->file('image_2'), $whereToStudy->image_2, 'image_2');
+        $whereToStudy->image_2 = $this->updateImage($request->file('image_2'), $whereToStudy->image_2);
 
         // Update image_3
-        $whereToStudy->image_3 = $this->updateImage($request->file('image_3'), $whereToStudy->image_3, 'image_3');
+        $whereToStudy->image_3 = $this->updateImage($request->file('image_3'), $whereToStudy->image_3);
 
         // Update image_4
-        $whereToStudy->image_4 = $this->updateImage($request->file('image_4'), $whereToStudy->image_4, 'image_4');
+        $whereToStudy->image_4 = $this->updateImage($request->file('image_4'), $whereToStudy->image_4);
 
         // Update image_5
-        $whereToStudy->image_5 = $this->updateImage($request->file('image_5'), $whereToStudy->image_5, 'image_5');
+        $whereToStudy->image_5 = $this->updateImage($request->file('image_5'), $whereToStudy->image_5);
 
         // Update other fields
         $whereToStudy->name = $request->name;
@@ -197,14 +156,14 @@ class whereToStudyController extends Controller
     }
 
     // Helper function to upload or update an image
-    private function updateImage($file, $previousImagePath, $fieldName)
+    private function updateImage($file, $previousImagePath)
     {
         if ($file) {
             // Delete previous image if it exists
             $this->deleteImageIfExists($previousImagePath);
 
             // Upload new image
-            return $this->uploadImage($file, $fieldName);
+            return $this->uploadImage($file);
         }
 
         // If no new image is uploaded, return the previous image path
@@ -212,13 +171,19 @@ class whereToStudyController extends Controller
     }
 
     // Helper function to upload an image
-    private function uploadImage($file, $fieldName)
+    private function uploadImage($file)
     {
-        $extension = $file->getClientOriginalExtension();
-        $filename = $fieldName . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extension;
-        $path = 'uploads/custom-images/where_to_study/' . $filename;
-        Image::make($file)->save(public_path($path));
-        return $path;
+        $directory = 'uploads/custom-images/where_to_study';
+        $destinationPath = public_path($directory);
+
+        if (!is_dir($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        $filename = basename($file->getClientOriginalName());
+        $file->move($destinationPath, $filename);
+
+        return $directory . '/' . $filename;
     }
 
     // Helper function to delete an image if it exists
@@ -252,3 +217,4 @@ class whereToStudyController extends Controller
 
 
 }
+

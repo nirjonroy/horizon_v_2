@@ -41,6 +41,52 @@
                         <input type="text" class="form-control" id="slug" name="slug" value="{{ $course->slug }}" >
                     </div>
 
+                    @if($course->meta_image)
+                        <div class="mb-3">
+                            <label class="d-block">Current Meta Image</label>
+                            <img src="{{ asset($course->meta_image) }}" alt="" class="mb-2" style="max-height: 120px;">
+                        </div>
+                    @endif
+                    <div class="form-group">
+                        <label>Meta Image</label>
+                        <input type="file" class="form-control-file" name="meta_image">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Meta Title</label>
+                        <input type="text" class="form-control" name="meta_title" value="{{ old('meta_title', $course->meta_title) }}" placeholder="Meta title for SEO">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Meta Description</label>
+                        <textarea class="form-control" name="meta_description" rows="3" placeholder="Short description for search engines">{{ old('meta_description', $course->meta_description) }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Author</label>
+                        <input type="text" class="form-control" name="author" value="{{ old('author', $course->author) }}" placeholder="Author name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Publisher</label>
+                        <input type="text" class="form-control" name="publisher" value="{{ old('publisher', $course->publisher) }}" placeholder="Publisher name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Copyright</label>
+                        <input type="text" class="form-control" name="copyright" value="{{ old('copyright', $course->copyright) }}" placeholder="Copyright notice">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Site Name</label>
+                        <input type="text" class="form-control" name="site_name" value="{{ old('site_name', $course->site_name) }}" placeholder="Site name for structured data">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Keywords</label>
+                        <input type="text" class="form-control" name="keywords" value="{{ old('keywords', $course->keywords) }}" placeholder="Keyword1, Keyword2, Keyword3">
+                    </div>
+
                     <div class="form-group">
                         <label>Instructor</label>
                         <input type="text" class="form-control" name="instructor" value="{{ $course->instructor }}">

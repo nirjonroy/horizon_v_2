@@ -1,29 +1,65 @@
 @extends('frontend.app')
-@section('title', 'Horizon -'. $course->title  )
+@php
+    $defaultSiteName = config('app.name', 'Horizons Unlimited');
+    $metaTitle = $course->meta_title ?: $course->title;
+    $rawDescription = $course->meta_description ?: strip_tags($course->short_description ?? '');
+    $metaDescription = \Illuminate\Support\Str::limit($rawDescription, 160, '');
+    if (mb_strlen($rawDescription) > 160) {
+        $metaDescription = rtrim($metaDescription) . '...';
+    }
+    $imagePath = $course->meta_image ?: $course->image;
+    $metaImage = $imagePath ? asset($imagePath) : '';
+    $metaAuthor = $course->author ?: $defaultSiteName;
+    $metaPublisher = $course->publisher ?: $defaultSiteName;
+    $metaCopyright = $course->copyright ?: 'Copyright ' . $defaultSiteName;
+    $metaSiteName = $course->site_name ?: $defaultSiteName;
+    $metaKeywords = $course->keywords;
+@endphp
+@section('title', $metaTitle)
 @section('seos')
-    
 
     <meta charset="UTF-8">
 
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
-    <meta name="title" content="{{$course->title}}">
+    <meta name="title" content="{{ $metaTitle }}">
 
-    <meta name="description" content="{{$course->short_description}}">
+    <meta name="description" content="{{ $metaDescription }}">
     
-    <!-- Populate the keywords meta tag -->
-    <meta name="keywords" content="" /> 
+    @if($metaKeywords)
+        <meta name="keywords" content="{{ $metaKeywords }}" />
+    @endif
 
-    <meta property="og:title" content="{{$course->title}}">
-    <meta property="og:description" content="{{$course->short_description}}">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:site_name" content="{{$course->title}}">
-    <meta property="og:image" content="{{asset($course->image)}}">
+    <meta property="og:site_name" content="{{ $metaSiteName }}">
+    @if($metaImage)
+        <meta property="og:image" content="{{ $metaImage }}">
+    @endif
     <meta property="og:locale" content="en_US">
     <meta property="og:type" content="website">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="628">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="{{ $metaAuthor }}">
+    <meta name="publisher" content="{{ $metaPublisher }}">
+    <meta name="copyright" content="{{ $metaCopyright }}">
+    <meta name="language" content="english">
+    <meta name="distribution" content="global">
+    <meta name="rating" content="general">
+    <link rel="canonical" href="{{ url()->current() }}">
+    @if($metaImage)
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ $metaImage }}">
+    @endif
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    @if($metaImage)
+        <meta name="twitter:image" content="{{ $metaImage }}">
+    @endif
+    <meta name="twitter:site" content="{{ $metaSiteName }}">
 @endsection
 @section('content')
 <section class="bg-white ">

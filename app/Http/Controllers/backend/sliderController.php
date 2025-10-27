@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\slider;
 use RealRashid\SweetAlert\Facades\Alert;
-use Image;
 class sliderController extends Controller
 {
     public function index(){
@@ -21,13 +20,8 @@ class sliderController extends Controller
     public function store(Request $request){
         $slider = new slider();
 
-        if($request->image){
-            $extention = $request->image->getClientOriginalExtension();
-            $image = 'image'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image = 'uploads/website-images/'.$image;
-            Image::make($request->image)
-                ->save(public_path().'/'.$image);
-            $slider->image = $image;
+        if($request->hasFile('image')){
+            $slider->image = $this->uploadImage($request->file('image'));
         }
 
         $slider->text_1 = $request->text_1;
@@ -50,7 +44,7 @@ class sliderController extends Controller
         $slider = slider::find($id);
 
         // Update hero_banner image
-        $slider->image = $this->updateImage($request->file('image'), $slider->image, 'image');
+        $slider->image = $this->updateImage($request->file('image'), $slider->image);
 
 
 
@@ -66,14 +60,14 @@ class sliderController extends Controller
     }
 
     // Helper function to upload or update an image
-    private function updateImage($file, $previousImagePath, $fieldName)
+    private function updateImage($file, $previousImagePath)
     {
         if ($file) {
             // Delete previous image if it exists
             $this->deleteImageIfExists($previousImagePath);
 
             // Upload new image
-            return $this->uploadImage($file, $fieldName);
+            return $this->uploadImage($file);
         }
 
         // If no new image is uploaded, return the previous image path
@@ -81,13 +75,19 @@ class sliderController extends Controller
     }
 
     // Helper function to upload an image
-    private function uploadImage($file, $fieldName)
+    private function uploadImage($file)
     {
-        $extension = $file->getClientOriginalExtension();
-        $filename = $fieldName . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extension;
-        $path = 'uploads/website-images/' . $filename;
-        Image::make($file)->save(public_path($path));
-        return $path;
+        $directory = 'uploads/website-images';
+        $destinationPath = public_path($directory);
+
+        if (!is_dir($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        $filename = basename($file->getClientOriginalName());
+        $file->move($destinationPath, $filename);
+
+        return $directory . '/' . $filename;
     }
 
     // Helper function to delete an image if it exists

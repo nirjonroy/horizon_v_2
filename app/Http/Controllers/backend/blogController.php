@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\whereToStudy;
 use App\Models\Blog;
 use App\Models\internationalStudentLife;
-use Image;
 class blogController extends Controller
 {
     public function index(){
@@ -24,17 +23,12 @@ class blogController extends Controller
     public function store(Request $request){
         $blog = new Blog();
 
-        if($request->image){
-            $extention = $request->image->getClientOriginalExtension();
-            $image = 'image'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image = 'uploads/custom-images/blogs/'.$image;
-            Image::make($request->image)
-                ->save(public_path().'/'.$image);
-            $blog->image = $image;
+        if($request->hasFile('image')){
+            $blog->image = $this->uploadImage($request->file('image'));
         }
 
         if ($request->hasFile('meta_image')) {
-            $blog->meta_image = $this->uploadImage($request->file('meta_image'), 'meta_image');
+            $blog->meta_image = $this->uploadImage($request->file('meta_image'));
         }
 
         $blog->where_to_study_id = $request->where_to_study_id;
@@ -71,8 +65,8 @@ class blogController extends Controller
         $blog = Blog::find($id);
 
         // Update hero_banner image
-        $blog->image = $this->updateImage($request->file('image'), $blog->image, 'image');
-        $blog->meta_image = $this->updateImage($request->file('meta_image'), $blog->meta_image, 'meta_image');
+        $blog->image = $this->updateImage($request->file('image'), $blog->image);
+        $blog->meta_image = $this->updateImage($request->file('meta_image'), $blog->meta_image);
 
 
 
@@ -101,14 +95,14 @@ class blogController extends Controller
     }
 
     // Helper function to upload or update an image
-    private function updateImage($file, $previousImagePath, $fieldName)
+    private function updateImage($file, $previousImagePath)
     {
         if ($file) {
             // Delete previous image if it exists
             $this->deleteImageIfExists($previousImagePath);
 
             // Upload new image
-            return $this->uploadImage($file, $fieldName);
+            return $this->uploadImage($file);
         }
 
         // If no new image is uploaded, return the previous image path
@@ -116,13 +110,19 @@ class blogController extends Controller
     }
 
     // Helper function to upload an image
-    private function uploadImage($file, $fieldName)
+    private function uploadImage($file)
     {
-        $extension = $file->getClientOriginalExtension();
-        $filename = $fieldName . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extension;
-        $path = 'uploads/custom-images/blogs/' . $filename;
-        Image::make($file)->save(public_path($path));
-        return $path;
+        $directory = 'uploads/custom-images/blogs';
+        $destinationPath = public_path($directory);
+
+        if (!is_dir($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        $filename = basename($file->getClientOriginalName());
+        $file->move($destinationPath, $filename);
+
+        return $directory . '/' . $filename;
     }
 
     // Helper function to delete an image if it exists

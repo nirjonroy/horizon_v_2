@@ -25,8 +25,7 @@ class siteInformationController extends Controller
         $info = siteInformation::find($id);
         if ($request->hasFile('logo')) { // Check if a file has been uploaded
             $existing_logo = $info->logo;
-            $extension = $request->file('logo')->getClientOriginalExtension(); // Get the file extension
-            $logo = 'logo'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extension; // Generate a unique filename
+            $logo = basename($request->file('logo')->getClientOriginalName()); // Use original filename
             $logo_path = 'uploads/website-images/'.$logo; // Construct the file path
             $request->file('logo')->move(public_path('uploads/website-images'), $logo); // Move the uploaded file to the desired location
             $info->logo = $logo_path; // Update the logo path in the database

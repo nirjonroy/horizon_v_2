@@ -43,6 +43,46 @@
     </div>
 
     <div class="mb-3">
+        <label class="form-label">Meta Image</label>
+        <input type="file" name="meta_image" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Meta Title</label>
+        <input type="text" name="meta_title" class="form-control" value="{{ old('meta_title') }}" placeholder="Meta title for SEO">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Meta Description</label>
+        <textarea name="meta_description" class="form-control" rows="3" placeholder="Short description for search engines">{{ old('meta_description') }}</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Author</label>
+        <input type="text" name="author" class="form-control" value="{{ old('author') }}" placeholder="Author name">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Publisher</label>
+        <input type="text" name="publisher" class="form-control" value="{{ old('publisher') }}" placeholder="Publisher name">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Copyright</label>
+        <input type="text" name="copyright" class="form-control" value="{{ old('copyright') }}" placeholder="Copyright notice">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Site Name</label>
+        <input type="text" name="site_name" class="form-control" value="{{ old('site_name') }}" placeholder="Site name for structured data">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Keywords</label>
+        <input type="text" name="keywords" class="form-control" value="{{ old('keywords') }}" placeholder="Keyword1, Keyword2, Keyword3">
+    </div>
+
+    <div class="mb-3">
         <label class="form-label">Instructor</label>
         <input type="text" name="instructor" class="form-control">
     </div>
